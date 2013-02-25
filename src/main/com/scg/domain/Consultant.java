@@ -3,6 +3,7 @@ package com.scg.domain;
 import com.scg.util.Name;
 
 import java.io.*;
+import java.util.logging.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,6 +15,7 @@ import java.io.*;
  */
 @SuppressWarnings({"serial", "unchecked"})
 public class Consultant implements Comparable<Consultant>, Serializable, ObjectInputValidation {
+    private static final Logger logger = Logger.getLogger("Consultant.class");
     private static final long serialVersionUID  = 8618148641066813998l;
 
     private final Name name;
@@ -78,6 +80,11 @@ public class Consultant implements Comparable<Consultant>, Serializable, ObjectI
         ois.defaultReadObject();
     }
 
+    private Object writeReplace() {
+        logger.info(String.format("Serializing: %s", name));
+        return new SerializationProxy(this);
+    }
+
     private static class SerializationProxy implements Serializable {
         private Name name;
 
@@ -89,12 +96,4 @@ public class Consultant implements Comparable<Consultant>, Serializable, ObjectI
             return new Consultant(name);
         }
     }
-
-    private Object writeReaplce() {
-        return new SerializationProxy(this);
-    }
-
-//    private void readObject(ObjectInputStream ois) throws InvalidObjectException {
-//        throw new InvalidObjectException("Proxy Required");
-//    }
 }

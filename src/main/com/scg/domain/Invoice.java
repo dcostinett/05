@@ -59,9 +59,6 @@ public final class Invoice {
     private final int invoiceMonth;
     private final int invoiceYear;
 
-    private final Date startDate;
-    private final Date endDate;
-
     private final DateRange dateRange;
 
     private final int maxItemsPerPage = 5;
@@ -91,10 +88,10 @@ public final class Invoice {
         cal.set(Calendar.MINUTE, cal.getActualMinimum(Calendar.MINUTE));
         cal.set(Calendar.SECOND, cal.getActualMinimum(Calendar.SECOND));
         cal.set(Calendar.MILLISECOND, cal.getActualMinimum(Calendar.MILLISECOND));
-        startDate = cal.getTime();
+        Date startDate = cal.getTime();
 
         cal.set(Calendar.DATE, cal.getMaximum(Calendar.DAY_OF_MONTH));
-        endDate = cal.getTime();
+        Date endDate = cal.getTime();
 
         this.dateRange = new DateRange(startDate, endDate);
 
@@ -108,10 +105,9 @@ public final class Invoice {
     public Invoice(ClientAccount client, DateRange dateRange) {
         this.client = client;
         this.dateRange = dateRange;
-        this.startDate = dateRange.getStartDate();
-        this.endDate = dateRange.getEndDate();
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(startDate);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dateRange.getStartDate());
         this.invoiceMonth = cal.get(Calendar.MONTH);
         this.invoiceYear = cal.get(Calendar.YEAR);
     }
@@ -121,7 +117,7 @@ public final class Invoice {
      * @return - Start date for this invoice.
      */
     public Date getStartDate() {
-        return startDate;
+        return dateRange.getStartDate();
     }
 
     /**
@@ -129,7 +125,7 @@ public final class Invoice {
      * @return - End date.
      */
     public Date getEndDate() {
-        return endDate;
+        return dateRange.getEndDate();
     }
 
     /**
@@ -235,7 +231,7 @@ public final class Invoice {
         InvoiceHeader invoiceHeader = new InvoiceHeader(
                 invoiceProperties.getProperty(BUSINESS_NAME_PROP),
                 addr,
-                startDate,
+                dateRange.getStartDate(),
                 new Date(invoiceMonth));
 
         InvoiceFooter footer = new InvoiceFooter(invoiceProperties.getProperty(BUSINESS_NAME_PROP));
