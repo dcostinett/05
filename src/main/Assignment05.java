@@ -28,14 +28,16 @@ import junit.framework.Assert;
  Create the invoices, one for each of the clients, using serialization to read the lists from file.
  */
 public final class Assignment05 {
+    /**
+     * This class' logger.
+     */
+    private static final Logger LOG = Logger.getLogger(Assignment05.class.getName());
+
     /** The invoice month. */
     private static final int INVOICE_MONTH = Calendar.MARCH;
 
     /** The test year. */
     private static final int INVOICE_YEAR = 2006;
-
-    /** This class' logger. */
-    private static final Logger LOG = Logger.getLogger("Assignment05");
 
     private List<ClientAccount> myAccounts = new ArrayList<ClientAccount>();
     private List<Consultant> myConsultants = new ArrayList<Consultant>();
@@ -52,8 +54,9 @@ public final class Assignment05 {
      */
     @SuppressWarnings({"serial", "unchecked"})
     public void deSerializeLists() {
+        FileInputStream fin = null;
         try {
-            FileInputStream fin = new FileInputStream("ClientList.ser");
+            fin = new FileInputStream("ClientList.ser");
             ObjectInputStream objectInputStream = new ObjectInputStream(fin);
 
 
@@ -71,6 +74,14 @@ public final class Assignment05 {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            if (fin != null) {
+                try {
+                    fin.close();
+                } catch (final IOException e) {
+                    LOG.severe(String.format("Unable to close input file."));
+                }
+            }
         }
 
     }
