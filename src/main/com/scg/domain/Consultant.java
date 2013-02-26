@@ -93,6 +93,7 @@ public class Consultant implements Comparable<Consultant>, Serializable, ObjectI
         }
 
         private Object readResolve() {
+            logger.info(String.format("De-serializing consultant: %s", name));
             return new Consultant(name);
         }
     }
